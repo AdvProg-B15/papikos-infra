@@ -1,0 +1,61 @@
+# templates/harbor.yml.j2
+hostname: {{ harbor_hostname }}
+
+# http related config
+http:
+  # port for http, default is 80. If https enabled, this port will redirect to https port
+  port: 80
+
+# https related config
+https:
+  # port for https, default is 443
+  port: 443
+  # The path of cert and key files for nginx
+  # certificate: /your/certificate/path
+  # private_key: /your/private/key/path
+  {% if use_https_self_signed %}
+  certificate: /data/cert/server.crt
+  private_key: /data/cert/server.key
+  {% else %}
+  # If you have your own certs, provide paths above and set use_https_self_signed to false
+  # Example:
+  # certificate: /etc/harbor/certs/my_domain.crt
+  # private_key: /etc/harbor/certs/my_domain.key
+  # Ensure these files are copied to the target machine before running prepare/install
+  {% endif %}
+
+# harbor admin password, PLEASE CHANGE IT.
+harbor_admin_password: {{ harbor_admin_password }}
+
+# The folder path of Harbor data storage
+# The default is /data, ensure it has enough space
+data_volume: {{ harbor_data_volume }}
+
+# Log path for harbor, default is /var/log/harbor
+log:
+  # options: debug, info, warning, error, fatal
+  level: info
+  # options: daily, weekly, monthly, size
+  # rotate_type: daily
+  # max_rotate_files: 7
+  # size: 100m #100 megabytes
+
+# Clair related configs
+clair:
+  #The updaters timeout in minutes
+  updaters_timeout: 10 #In minutes
+
+# Trivy related configs
+trivy:
+  # The Trivy adapter ignores insecure TLS connections to the Trivy server. (Default: false)
+  insecure: false
+  # The Trivy adapter connect to the trivy server (Default: http://trivy:8080)
+  addr: http://trivy:8080
+  # Timeout for trivy scan (Default 5m0s)
+  # The maximum value is 60m
+  timeout: 5m0s
+  # The Trivy adapter skip update db (Default: false)
+  skip_update: false
+
+# Other configurations (refer to Harbor documentation for more options)
+# e.g., external_url, auth_mode, email server, etc.

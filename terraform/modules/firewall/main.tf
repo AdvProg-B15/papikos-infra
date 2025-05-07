@@ -47,13 +47,11 @@ resource "google_compute_firewall" "allow_internal" {
   name    = "advprog-allow-internal"
   network = var.network_name
 
-  direction = "INGRESS"
-  priority  = 1001
-
   allow {
-    protocol = "all"
+    protocol = "tcp"
+    ports = ["0-65535"]
   }
 
-  source_ranges      = ["10.0.0.0/24"]
-  destination_ranges = ["10.0.0.0/24"]
+  source_ranges      = ["10.0.0.0/27"]
+  destination_ranges = ["10.0.0.0/27"]
 }
